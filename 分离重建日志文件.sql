@@ -1,0 +1,4 @@
+CREATE DATABASE test_ ON
+( FILENAME = N'E:\Kingdee\test__Data.mdf')
+FOR ATTACH_REBUILD_LOG
+GO

@@ -1,0 +1,5 @@
+truncate table T_ENG_BBEBOM
+truncate table T_ENG_BBEBOM_l
+truncate table T_ENG_BBEBOMCHILD
+truncate table T_ENG_BBEBOMCHILD_l
+truncate table T_ENG_BBEBOMCHILD_A

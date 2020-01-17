@@ -1,0 +1,55 @@
+use AIS20190719142428
+--创建视图V_V_CN_SALEORDERENTITY
+if (exists (select * from sys.objects where name = 'V_CN_SALEORDERENTITY'))
+    drop view V_CN_SALEORDERENTITY
+go
+create view V_CN_SALEORDERENTITY as 
+select e.FENTRYID FID,(o.FBILLNO+'|'+CONVERT(nvarchar(20),e.FSEQ)) FNUMBER,e.FSEQ, e.FMATERIALID,f.FPRICEUNITID,
+o.FCUSTID,o.FSALEORGID,o.FSALERID,f1.FSETTLECURRID,
+f.FPRICEUNITQTY,f.FPRICE, f.FTAXPRICE,
+o.FDOCUMENTSTATUS,o.FCANCELSTATUS FFORBIDSTATUS
+ from T_SAL_ORDERENTRY e
+left join T_SAL_ORDER o on o.FID=e.FID
+left join T_SAL_ORDERENTRY_F f on f.FENTRYID=e.FENTRYID
+left join T_SAL_ORDERFIN f1 on f1.FID=e.FID;
+go
+
+--创建视图V_V_CN_SALEORDERENTITY_L
+if (exists (select * from sys.objects where name = 'V_CN_SALEORDERENTITY_L'))
+    drop view V_CN_SALEORDERENTITY_L
+go
+create view V_CN_SALEORDERENTITY_L as 
+select e.FENTRYID FPKID,e.FENTRYID FID,o.FBILLNO FNAME,2052 as FLOCALEID
+from T_SAL_ORDERENTRY e
+left join T_SAL_ORDER o on e.FID=o.FID
+go
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+--创建视图V_V_CN_DELIVERYNOTICE
+if (exists (select * from sys.objects where name = 'V_CN_DELIVERYNOTICE'))
+    drop view V_CN_DELIVERYNOTICE
+go
+create view V_CN_DELIVERYNOTICE as 
+select e.FENTRYID FID,(n.FBILLNO+'|'+CONVERT(nvarchar(20),e.FSEQ)) FNUMBER,e.FSEQ, 
+L.FNAME FSALEORDERNUMBER,o.FSEQ FORDERSEQ,o.FMATERIALID,o.FPRICEUNITID,o.FPRICEUNITQTY,o.FPRICE,o.FTAXPRICE,o.FSETTLECURRID,o.FCUSTID,o.FSALERID,
+e.FUNITID,e.FQTY, n.FSALEORGID,
+n.FDOCUMENTSTATUS,n.FCANCELSTATUS FFORBIDSTATUS
+ from T_SAL_DELIVERYNOTICEENTRY e
+left join T_SAL_DELIVERYNOTICE n on n.FID=e.FID
+left join V_CN_SALEORDERENTITY o on o.FID=CONVERT(int,e.FORDERSEQ)
+left join V_CN_SALEORDERENTITY_L L on o.FID=L.FID
+go
+
+--创建视图V_V_CN_V_CN_DELIVERYNOTICE_L
+if (exists (select * from sys.objects where name = 'V_CN_DELIVERYNOTICE_L'))
+    drop view V_CN_DELIVERYNOTICE_L
+go
+create view V_CN_DELIVERYNOTICE_L as 
+select e.FENTRYID FPKID,e.FENTRYID FID,o.FBILLNO FNAME,2052 as FLOCALEID
+from T_SAL_DELIVERYNOTICEENTRY e
+left join T_SAL_DELIVERYNOTICE o on e.FID=o.FID
+go
+
+select * from T_SAL_DELIVERYNOTICEENTRY
+select * from V_CN_DELIVERYNOTICE
